@@ -19,12 +19,6 @@ class PostViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    def perform_update(self, serializer):
-        super().perform_update(serializer)
-
-    def perform_destroy(self, instance):
-        super().perform_destroy(instance)
-
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
@@ -33,7 +27,6 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = (AuthorOrReadOnly,)
 
@@ -45,12 +38,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         post = get_object_or_404(Post, id=self.kwargs.get('post_id'))
         serializer.save(author=self.request.user, post=post)
-
-    def perform_update(self, serializer):
-        super().perform_update(serializer)
-
-    def perform_destroy(self, instance):
-        instance.delete()
 
 
 class FollowViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
